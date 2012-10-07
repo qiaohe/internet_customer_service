@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+    <context:component-scan base-package="com.threeti.ics.server.*"/>
+    <context:annotation-config/>
+    <context:spring-configured/>
+    <aop:aspectj-autoproxy/>
+    <util:properties id="icsProperties" location="classpath:ics.properties"/>
+    <context:property-placeholder  properties-ref="icsProperties"/>
+    <context:load-time-weaver aspectj-weaving="on"
+                              weaver-class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${db.host}"/>
+        <property name="port" value="${db.port}"/>
+        <property name="usePool" value="${db.usePool}"/>
+    </bean>
+    <bean id="template" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+
+    <bean id="pushMessageListener" class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
+        <constructor-arg>
+            <bean class="com.threeti.ics.server.listener.QueueChangedMessagingDelegate"/>
+        </constructor-arg>
+    </bean>
+    <bean id="statusChangedMessageListener"
+          class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
+        <constructor-arg>
+            <bean class="com.threeti.ics.server.listener.CustomerServiceStatusChangedMessagingDelegate"/>
+        </constructor-arg>
+    </bean>
+    <bean id="asyncIndexMessageListener" class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
+        <constructor-arg>
+            <bean class="com.threeti.ics.server.listener.AsyncIndexerMessagingDelegate"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="redisContainer" class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+        <property name="messageListeners">
+            <map>
+                <entry key-ref="pushMessageListener">
+                    <bean class="org.springframework.data.redis.listener.ChannelTopic">
+                        <constructor-arg value="pushQueue"/>
+                    </bean>
+                </entry>
+                <entry key-ref="statusChangedMessageListener">
+                    <bean class="org.springframework.data.redis.listener.ChannelTopic">
+                        <constructor-arg value="customerServiceStatusChanged"/>
+                    </bean>
+                </entry>
+                <entry key-ref="asyncIndexMessageListener">
+                    <bean class="org.springframework.data.redis.listener.ChannelTopic">
+                        <constructor-arg value="asyncIndexer"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <!--<bean id="performanceMonitor"-->
+    <!--class="org.springframework.aop.interceptor.PerformanceMonitorInterceptor" />-->
+    <!--<aop:config>-->
+    <!--<aop:pointcut id="allMethods" expression="execution(* com.threeti.ics.server.*.*.*(..))"/>-->
+    <!--<aop:advisor pointcut-ref="allMethods" advice-ref="performanceMonitor" order="2"/>-->
+    <!--</aop:config>-->
+</beans>
