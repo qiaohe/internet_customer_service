@@ -99,7 +99,7 @@ public class Message {
         return StringUtils.isEmpty(this.to);
     }
 
-    //    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    //@JsonInclude(value = JsonInclude.Include.NON_NULL)
     public String getType() {
         return type;
     }

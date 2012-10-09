@@ -32,7 +32,7 @@ public class AcceptSessionHandler extends AppointSessionHandler implements Sessi
     @Override
     public Map<String, Object> handle(SessionOperationRequest request, IoSession session) {
         Message message = request.getWelcomeMessage();
-        String visitor = conversationDao.findBy(Long.valueOf(message.getConversationId())).getVisitor();
+        String visitor = conversationDao.findBy(message.getConversationId()).getVisitor();
         message.setTo(visitor);
         new MessageTransferCommand(ObjectJsonMapper.getJsonStringBy(message)).execute(session);
         return super.handle(request, session);

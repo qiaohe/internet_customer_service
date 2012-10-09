@@ -8,6 +8,7 @@
         <include within="com.threeti.ics.server.domain.socketserver.command.BuildConversationCommand"/>
         <include within="com.threeti.ics.server.domain.socketserver.command.MessageStatusChangeCommand"/>
         <include within="com.threeti.ics.server.domain.socketserver.command.MessageTransferCommand"/>
+        <include within="com.threeti.ics.server.domain.socketserver.command.UploadImageCommand"/>
         <include within="com.threeti.ics.server.domain.socketserver.command.CustomerServiceLoginCommand"/>
         <include within="com.threeti.ics.server.domain.socketserver.command.QueueConversationListCommand"/>
         <include within="com.threeti.ics.server.domain.socketserver.command.CustomerServiceStatusChangeCommand"/>
@@ -21,6 +22,7 @@
         <include within="com.threeti.ics.server.domain.socketserver.handler.SessionTransferHandler"/>
         <include within="com.threeti.ics.server.domain.socketserver.handler.ResumeSessionHandler"/>
         <include within="com.threeti.ics.server.domain.socketserver.handler.AppointSessionHandler"/>
+        <include within="com.threeti.ics.server.listener.QueueChangeMessage"/>
         <exclude within="*..*CGLIB*"/>
         <exclude within="*..*javassist*"/>
     </weaver>

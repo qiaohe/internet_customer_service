@@ -13,7 +13,7 @@
     <context:load-time-weaver aspectj-weaving="on"
                               weaver-class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver"/>
     <!--<context:load-time-weaver aspectj-weaving="on"-->
-                              <!--weaver-class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>-->
+    <!--weaver-class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>-->
     <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
         <property name="hostName" value="${db.host}"/>
         <property name="port" value="${db.port}"/>
@@ -22,21 +22,13 @@
     <bean id="template" class="org.springframework.data.redis.core.StringRedisTemplate">
         <property name="connectionFactory" ref="jedisConnectionFactory"/>
     </bean>
-    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
-        <property name="valueSerializer">
-            <bean id="redisJsonSerializer"
-                  class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer">
-            </bean>
-        </property>
-        <property name="connectionFactory" ref="jedisConnectionFactory"/>
-    </bean>
-
     <bean id="pushMessageListener" class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
         <constructor-arg>
             <bean class="com.threeti.ics.server.listener.QueueChangedMessagingDelegate"/>
         </constructor-arg>
     </bean>
-    <bean id="statusChangedMessageListener" class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
+    <bean id="statusChangedMessageListener"
+          class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
         <constructor-arg>
             <bean class="com.threeti.ics.server.listener.CustomerServiceStatusChangedMessagingDelegate"/>
         </constructor-arg>

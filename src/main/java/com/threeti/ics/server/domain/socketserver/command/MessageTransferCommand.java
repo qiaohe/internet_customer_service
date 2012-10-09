@@ -35,8 +35,8 @@ public class MessageTransferCommand extends AbstractCommand implements Command {
 
     private IoSession getDestinationSession(Message message) {
         if (message.isOutgoing())
-            return SessionManager.getInstance().getSessionByCustomerService(message.getCustomerServiceUser());
-        return SessionManager.getInstance().getSessionByVisitor(message.getTo());
+            return SessionManager.getInstance().getSessionByVisitor(message.getTo());
+        return SessionManager.getInstance().getSessionByCustomerService(message.getCustomerServiceUser());
     }
 
     private Message createMessage() {

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
  * To change this template use File | Settings | File Templates.
  */
 public class ImageFileName {
-    public static final String DEFAULT_EXTENSION = ".jpg";
+    public static final String DEFAULT_EXTENSION = "jpg";
 
     private static final int DEFAULT_LENGTH = 20;
     private static final String FILENAME_PATTERN = "%s.%s";

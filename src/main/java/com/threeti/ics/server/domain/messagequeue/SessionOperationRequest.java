@@ -116,7 +116,7 @@ public class SessionOperationRequest {
         result.setFrom(getCustomerService());
         result.setType("text");
         result.setStatus(MessageStatus.SENT);
-        I18NMessages.getMessage("global.welcome", customerServiceUserDao.findBy(getCustomerService()).getNickName());
+        result.setMessageBody(I18NMessages.getMessage("global.welcome", customerServiceUserDao.findBy(getCustomerService()).getNickName()));
         return result;
     }
 }

@@ -33,7 +33,7 @@ public class AsyncIndexerMessagingDelegate implements MessageDelegate {
     @Override
     public void handleMessage(String message) throws IOException {
         Message m = ObjectJsonMapper.getObjectBy(message, Message.class);
-        Conversation conversation = conversationDao.findBy(Long.valueOf(m.getConversationId()));
+        Conversation conversation = conversationDao.findBy(m.getConversationId());
         String topic = conversationTopicDao.findBy(conversation.getProductId()).getProductName();
         MessageItem item = new MessageItem(m, topic, conversation.getVisitorName());
         indexer.index(item);

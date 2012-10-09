@@ -1,12 +1,11 @@
 package com.threeti.ics.server.listener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.org.apache.xml.internal.utils.SerializableLocatorImpl;
 import com.threeti.ics.server.dao.conversation.ConversationDao;
 import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +14,10 @@ import java.io.Serializable;
  * Time: 3:36 PM
  * To change this template use File | Settings | File Templates.
  */
-public class QueueChangeMessage implements Serializable {
+@Configurable
+public class QueueChangeMessage {
     @Autowired
+    @JsonIgnore
     private ConversationDao conversationDao;
     private String queueName;
     private OperationTypeEnum operationType;

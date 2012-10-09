@@ -1,5 +1,6 @@
 package com.threeti.ics.server.domain.messagequeue;
 
+import com.threeti.ics.server.common.ObjectJsonMapper;
 import com.threeti.ics.server.dao.conversation.ConversationDao;
 import com.threeti.ics.server.dao.queue.QueueDao;
 import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
@@ -27,8 +28,7 @@ public class QueueController {
     @Autowired
     private ConversationDao conversationDao;
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
+    private RedisTemplate<String, String> template;
 
     public void doSuspend(SessionOperationRequest request) {
         move(QueueType.SESSION, QueueType.ACTIONREQUIRED, request);
@@ -37,13 +37,11 @@ public class QueueController {
     public void doAccept(SessionOperationRequest request) {
         if (request.isFromPublicQueueWithinAcceptAndAppoint()) {
             move(QueueType.PUBLIC, QueueType.SESSION, request);
-            redisTemplate.convertAndSend(PUSH_QUEUE, createQueueChangeMessage(QueueType.PUBLIC.getQueueName(null),
-                    request.getConversationId(), QueueChangeMessage.OperationTypeEnum.REMOVE));
         } else {
             move(QueueType.CUSTOMERMESSAGE, QueueType.PUBLIC, request);
-            redisTemplate.convertAndSend(PUSH_QUEUE, createQueueChangeMessage(QueueType.CUSTOMERMESSAGE.getQueueName(null),
-                    request.getConversationId(), QueueChangeMessage.OperationTypeEnum.REMOVE));
         }
+        template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.CUSTOMERMESSAGE.getQueueName(null),
+                request.getConversationId(), QueueChangeMessage.OperationTypeEnum.REMOVE)));
     }
 
     public void doTerminate(SessionOperationRequest request) {
@@ -88,9 +86,6 @@ public class QueueController {
     private void doJoin(String queueName, Conversation conversation) {
         queueDao.add(queueName, conversation.getId());
         conversationDao.updateStatus(conversation.getId(), conversation.getStatus());
-        redisTemplate.convertAndSend(PUSH_QUEUE, createQueueChangeMessage(queueName,
-                conversation.getId(), QueueChangeMessage.OperationTypeEnum.ADD));
-
     }
 
     public void doDispatch(Conversation conversation) {
@@ -101,8 +96,12 @@ public class QueueController {
             conversation.setStatus(ConversationStatus.NOTACCEPTED);
             if (SessionManager.getInstance().hasOnlineCustomerService()) {
                 doJoin(QueueType.PUBLIC.getQueueName(null), conversation);
+                template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.PUBLIC.getQueueName(null),
+                        conversation.getId(), QueueChangeMessage.OperationTypeEnum.ADD)));
             } else {
                 doJoin(QueueType.CUSTOMERMESSAGE.getQueueName(null), conversation);
+                template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.CUSTOMERMESSAGE.getQueueName(null),
+                        conversation.getId(), QueueChangeMessage.OperationTypeEnum.ADD)));
             }
         }
     }

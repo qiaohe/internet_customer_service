@@ -65,4 +65,14 @@ public final class Server {
     public void destroy() {
         acceptor.unbind(new InetSocketAddress(getSocketServerInfo().getPort()));
     }
+
+    public void start() throws IOException {
+        if (!acceptor.isActive() && !acceptor.isDisposed()) {
+            acceptor.bind(new InetSocketAddress(getSocketServerInfo().getPort()));
+        }
+    }
+
+    public void stop() {
+        acceptor.unbind(new InetSocketAddress(getSocketServerInfo().getPort()));
+    }
 }

@@ -37,6 +37,6 @@ public class ImageServerInfo {
     }
 
     public String getBaseUrl() {
-       return String.format("http://%s:%d/%s", host, port, context);
+       return String.format("http://%s:%d/%s/", host, port, context);
     }
 }

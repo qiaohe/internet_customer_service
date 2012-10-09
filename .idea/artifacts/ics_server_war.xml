@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="ics-server:war">
+  <artifact type="exploded-ear" name="ics-server:war">
     <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="ics-server-1.0.war">
+    <root id="root">
       <element id="artifact" artifact-name="ics-server:war exploded" />
     </root>
   </artifact>

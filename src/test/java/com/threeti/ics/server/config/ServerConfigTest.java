@@ -20,7 +20,7 @@ public class ServerConfigTest {
     @Test
     public void testGetImageServerInfo() {
         ImageServerInfo isi = ServerConfig.getInstance().getImageServerInfo();
-        Assert.assertEquals("http://127.0.0.1:80/images", isi.getBaseUrl());
+        Assert.assertEquals("http://192.168.2.91:8088/images/", isi.getBaseUrl());
     }
 
     @Test

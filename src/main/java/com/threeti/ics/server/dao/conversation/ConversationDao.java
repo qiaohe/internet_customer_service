@@ -63,7 +63,7 @@ public class ConversationDao extends AbstractGenericDaoImpl<Conversation> implem
             return findBy(id);
         }
         conv.setId(id);
-        template.opsForHash().put(getIdKey(id), "id", id);
+        template.opsForHash().put(getIdKey(id), "id", id.toString());
         template.opsForHash().put(getIdKey(id), "topic", conv.getTopic().getId().toString());
         template.opsForHash().put(getIdKey(id), "visitor", conv.getVisitor());
         template.opsForHash().put(getIdKey(id), "visitorName", conv.getVisitorName());

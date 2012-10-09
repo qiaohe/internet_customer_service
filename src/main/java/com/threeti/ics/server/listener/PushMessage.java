@@ -1,9 +1,6 @@
 package com.threeti.ics.server.listener;
 
 import com.threeti.ics.server.common.ObjectJsonMapper;
-import com.threeti.ics.server.dao.conversation.ConversationDao;
-import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
@@ -55,6 +52,4 @@ public class PushMessage {
                 .append("length", message.getLength())
                 .append("conversation", message.getConversation());
     }
-
-
 }

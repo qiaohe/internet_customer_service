@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
  * To change this template use File | Settings | File Templates.
  */
 public final class I18NMessages {
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.CHINA);
 
     public static String getMessage(final String key) {
         return bundle.getString(key);
