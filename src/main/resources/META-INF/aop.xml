@@ -22,6 +22,7 @@
         <include within="com.threeti.ics.server.domain.socketserver.handler.SessionTransferHandler"/>
         <include within="com.threeti.ics.server.domain.socketserver.handler.ResumeSessionHandler"/>
         <include within="com.threeti.ics.server.domain.socketserver.handler.AppointSessionHandler"/>
+        <include within="com.threeti.ics.server.domain.socketserver.handler.MessageStatusChangeHandler"/>
         <include within="com.threeti.ics.server.listener.QueueChangeMessage"/>
         <exclude within="*..*CGLIB*"/>
         <exclude within="*..*javassist*"/>

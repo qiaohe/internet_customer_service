@@ -40,7 +40,7 @@ public class AbstractGenericDaoImpl<T> implements GenericDao<T> {
         this.type = type;
     }
 
-    private String getTypeName() {
+    protected String getTypeName() {
         return StringUtils.uncapitalize(type.getSimpleName());
     }
 
