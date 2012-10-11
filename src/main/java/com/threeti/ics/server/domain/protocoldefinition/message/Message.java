@@ -14,7 +14,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class Message {
-    private Long id;
+    private String id;
     private Long conversationId;
     private String from;
     private String to;
@@ -78,11 +78,11 @@ public class Message {
         this.status = status;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -99,7 +99,6 @@ public class Message {
         return StringUtils.isEmpty(this.to);
     }
 
-    //@JsonInclude(value = JsonInclude.Include.NON_NULL)
     public String getType() {
         return type;
     }
@@ -125,10 +124,5 @@ public class Message {
     @JsonIgnore
     public boolean isOutgoing() {
         return StringUtils.isNotEmpty(from) && from.length() == 10;
-    }
-
-    @JsonIgnore
-    public String getIdAsString() {
-        return id.toString();
     }
 }

@@ -31,27 +31,4 @@ public class CustomerServiceStatusChangedMessagingDelegate implements MessageDel
             SessionManager.getInstance().getSessionByVisitor(v).write(request.toJsonString());
         }
     }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void handleMessage(Map message) {
-    }
-
-    @Override
-    public void handleMessage(byte[] message) {
-    }
-
-    @Override
-    public void handleMessage(Serializable message) {
-
-
-    }
-
-    @Override
-    public void handleMessage(Serializable message, String channel) {
-    }
-
-    public static void main(String[] args) {
-
-    }
 }

@@ -38,9 +38,9 @@ public class Indexer {
     }
 
     public void index(MessageItem item) throws IOException {
-        writer.deleteDocuments(new Term("id", item.getMessage().getId().toString()));
+        writer.deleteDocuments(new Term("id", item.getMessage().getId()));
         Document doc = new Document();
-        doc.add(new Field("id", item.getMessage().getIdAsString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        doc.add(new Field("id", item.getMessage().getId(), Field.Store.YES, Field.Index.NOT_ANALYZED));
         doc.add(new Field("visitor", item.getVisitor(), Field.Store.YES, Field.Index.ANALYZED));
         final String cn = item.getMessage().getCustomerServiceUser();
         doc.add(new Field("customerServiceUserName", cn == null ? StringUtils.EMPTY : cn, Field.Store.YES, Field.Index.ANALYZED));

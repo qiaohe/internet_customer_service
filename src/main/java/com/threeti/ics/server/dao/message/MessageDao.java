@@ -36,33 +36,34 @@ public class MessageDao extends AbstractGenericDaoImpl<Message> implements Gener
     protected Long getId(Message message) {
         return idCounter.incrementAndGet();
     }
+    protected String getIdKey(final String id) {
+        return getTypeName() + ":" + id;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
     public Message create(Message message) {
         final Long cid = message.getConversationId();
-        message.setId(idCounter.incrementAndGet());
         Date d = new Date();
         message.setDate(d);
         message.setDateString(Constants.getDateString(d));
         template.opsForHash().putAll(getIdKey(message.getId()), getProperties(message));
-        template.opsForList().leftPush(KeyUtils.conversationMessage(cid), message.getId().toString());
+        template.opsForList().leftPush(KeyUtils.conversationMessage(cid), message.getId());
         template.convertAndSend("asyncIndexer", ObjectJsonMapper.getJsonStringBy(message));
         return message;
     }
 
     public List<Message> findBy(final Long conversationId, final int pageFrom, final int pageSize) {
-        List<String> messageIds = template.sort(SortQueryBuilder.sort(KeyUtils.conversationMessage(conversationId)).
+        List<String> messageIds = template.sort(SortQueryBuilder.sort(KeyUtils.conversationMessage(conversationId)).noSort().
                 order(SortParameters.Order.DESC).limit(pageFrom, pageSize).build());
         List<Message> result = new ArrayList<Message>();
         for (String messageId : messageIds) {
-            result.add(findBy(Long.valueOf(messageId)));
+            result.add(findBy(messageId));
         }
         return result;
     }
 
-    @Override
-    public Message findBy(Long id) {
+    public Message findBy(String id) {
         Message result = new Message();
         result.setId(id);
         result.setFrom(template.opsForHash().get(getIdKey(id), "from").toString());
@@ -77,8 +78,8 @@ public class MessageDao extends AbstractGenericDaoImpl<Message> implements Gener
         return result;
     }
 
-    public void updateStatus(Long[] messageIds, String status) {
-        for (Long messageId : messageIds) {
+    public void updateStatus(String[] messageIds, String status) {
+        for (String messageId : messageIds) {
             template.opsForHash().put(getIdKey(messageId), "status", status);
         }
     }

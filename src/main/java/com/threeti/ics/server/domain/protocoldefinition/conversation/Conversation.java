@@ -1,7 +1,9 @@
 package com.threeti.ics.server.domain.protocoldefinition.conversation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.threeti.ics.server.dao.core.KeyUtils;
 import com.threeti.ics.server.dao.identity.ServiceTokenDao;
+import com.threeti.ics.server.domain.messagequeue.QueueController;
 import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUser;
 import com.threeti.ics.server.domain.protocoldefinition.message.Message;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,7 @@ public class Conversation {
     private ConversationStatus status;
     private Date createDate;
     private List<Message> messages = new ArrayList<Message>();
+    private long unreadMessageCount;
 
     public Long getId() {
         return id;
@@ -126,9 +129,11 @@ public class Conversation {
         return StringUtils.isNotEmpty(getCustomerServiceUsername()) && ConversationStatus.TERMINATED.equals(getStatus());
     }
 
-    @JsonIgnore
-    public String getIdAsString() {
-        return id.toString();
+    public long getUnreadMessageCount() {
+        return unreadMessageCount;
     }
 
+    public void setUnreadMessageCount(long unreadMessageCount) {
+        this.unreadMessageCount = unreadMessageCount;
+    }
 }

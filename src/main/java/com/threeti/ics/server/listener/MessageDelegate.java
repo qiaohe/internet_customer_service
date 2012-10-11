@@ -13,12 +13,4 @@ import java.util.Map;
  */
 public interface MessageDelegate {
     void handleMessage(String message) throws IOException;
-
-    void handleMessage(Map message);
-
-    void handleMessage(byte[] message);
-
-    void handleMessage(Serializable message);
-
-    void handleMessage(Serializable message, String channel);
 }

@@ -21,23 +21,4 @@ public class QueueChangedMessagingDelegate implements MessageDelegate {
         for (IoSession session : SessionManager.getInstance().getCustomerServiceSessions())
             session.write(ObjectJsonMapper.getJsonStringBy(PushMessage.valueOf(msg)));
     }
-
-    @Override
-    public void handleMessage(Map message) {
-    }
-
-    @Override
-    public void handleMessage(byte[] message) {
-    }
-
-    @Override
-    public void handleMessage(Serializable message) {
-//        QueueChangeMessage msg = (QueueChangeMessage) message;
-//        for (IoSession session : SessionManager.getInstance().getCustomerServiceSessions())
-//            session.write(PushMessage.valueOf(msg));
-    }
-
-    @Override
-    public void handleMessage(Serializable message, String channel) {
-    }
 }

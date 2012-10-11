@@ -114,8 +114,9 @@ public class SessionOperationRequest {
         result.setConversationId(conversationId);
         result.setDate(new Date());
         result.setFrom(getCustomerService());
+        result.setId(UUID.randomUUID().toString());
         result.setType("text");
-        result.setStatus(MessageStatus.SENT);
+        result.setStatus(MessageStatus.NOTREAD);
         result.setMessageBody(I18NMessages.getMessage("global.welcome", customerServiceUserDao.findBy(getCustomerService()).getNickName()));
         return result;
     }

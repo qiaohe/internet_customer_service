@@ -2,8 +2,11 @@ package com.threeti.ics.server.domain.socketserver.command;
 
 import com.threeti.ics.server.common.ObjectJsonMapper;
 import com.threeti.ics.server.dao.conversation.ConversationDao;
+import com.threeti.ics.server.dao.core.KeyUtils;
 import com.threeti.ics.server.dao.message.MessageDao;
+import com.threeti.ics.server.dao.queue.QueueDao;
 import com.threeti.ics.server.domain.messagequeue.QueueController;
+import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
 import com.threeti.ics.server.domain.protocoldefinition.message.Message;
 import com.threeti.ics.server.domain.socketserver.server.SessionManager;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +29,8 @@ public class MessageTransferCommand extends AbstractCommand implements Command {
     private MessageDao messageDao;
     @Autowired
     private QueueController queueController;
+    @Autowired
+    private QueueDao queueDao;
     @Autowired
     private ConversationDao conversationDao;
 
@@ -55,7 +60,12 @@ public class MessageTransferCommand extends AbstractCommand implements Command {
             SessionManager.getInstance().broadcast(getResults());
             return;
         }
-        queueController.doDispatch(conversationDao.findBy(message.getConversationId()));
+        queueDao.add(KeyUtils.unreadConversationMessage(message.getConversationId(), message.getTo()), message.getId());
+        if (!message.isOutgoing()) {
+            Conversation conversation = conversationDao.findBy(message.getConversationId());
+            if (conversation.isInTerminated())
+                queueController.doDispatch(conversation);
+        }
         IoSession destinationSession = getDestinationSession(message);
         if (destinationSession != null) {
             addResult(RESULT_MESSAGE_KEY, message);

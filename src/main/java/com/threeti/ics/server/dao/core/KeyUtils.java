@@ -60,4 +60,8 @@ public abstract class KeyUtils {
         return String.format("messageTemplate:appKey:%s:group:*", appKey);
     }
 
+    public static String unreadConversationMessage(final Long conversationId, final String to) {
+        return "conversation:" + conversationId + ":to:" + to + "unread_message";
+    }
+
 }

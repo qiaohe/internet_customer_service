@@ -98,7 +98,7 @@ public class ConversationDao extends AbstractGenericDaoImpl<Conversation> implem
             Conversation c = findBy(Long.valueOf(covId));
             String messageQueue = KeyUtils.conversationMessage(Long.valueOf(covId));
             for (String msgId : template.opsForList().range(messageQueue, 0, 0)) {
-                c.addMessage(messageDao.findBy(Long.valueOf(msgId)));
+                c.addMessage(messageDao.findBy(msgId));
             }
             result.add(c);
         }
@@ -109,7 +109,7 @@ public class ConversationDao extends AbstractGenericDaoImpl<Conversation> implem
         Conversation result = findBy(convId);
         String messageQueue = KeyUtils.conversationMessage(convId);
         for (String msgId : template.opsForList().range(messageQueue, 0, 0)) {
-            result.addMessage(messageDao.findBy(Long.valueOf(msgId)));
+            result.addMessage(messageDao.findBy(msgId));
         }
         return result;
     }
@@ -133,7 +133,7 @@ public class ConversationDao extends AbstractGenericDaoImpl<Conversation> implem
             Conversation c = findBy(Long.valueOf(covId));
             String messageQueue = KeyUtils.conversationMessage(Long.valueOf(covId));
             for (String msgId : template.opsForList().range(messageQueue, 0, 0)) {
-                c.addMessage(messageDao.findBy(Long.valueOf(msgId)));
+                c.addMessage(messageDao.findBy(msgId));
                 result.add(c);
             }
         }

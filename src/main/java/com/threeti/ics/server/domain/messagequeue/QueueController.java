@@ -6,6 +6,7 @@ import com.threeti.ics.server.dao.queue.QueueDao;
 import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
 import com.threeti.ics.server.domain.protocoldefinition.conversation.ConversationStatus;
 import com.threeti.ics.server.domain.socketserver.server.SessionManager;
+import com.threeti.ics.server.listener.OperationTypeEnum;
 import com.threeti.ics.server.listener.QueueChangeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,7 +29,7 @@ public class QueueController {
     @Autowired
     private ConversationDao conversationDao;
     @Autowired
-    private RedisTemplate<String, String> template;
+    protected RedisTemplate<String, String> template;
 
     public void doSuspend(SessionOperationRequest request) {
         move(QueueType.SESSION, QueueType.ACTIONREQUIRED, request);
@@ -41,7 +42,7 @@ public class QueueController {
             move(QueueType.CUSTOMERMESSAGE, QueueType.PUBLIC, request);
         }
         template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.CUSTOMERMESSAGE.getQueueName(null),
-                request.getConversationId(), QueueChangeMessage.OperationTypeEnum.REMOVE)));
+                request.getConversationId(), OperationTypeEnum.REMOVE)));
     }
 
     public void doTerminate(SessionOperationRequest request) {
@@ -63,7 +64,7 @@ public class QueueController {
         move(QueueType.SESSION, QueueType.ACTIONREQUIRED, request);
     }
 
-    public QueueChangeMessage createQueueChangeMessage(final String queueName, final Long conId, QueueChangeMessage.OperationTypeEnum operationType) {
+    public QueueChangeMessage createQueueChangeMessage(final String queueName, final Long conId, OperationTypeEnum operationType) {
         QueueChangeMessage result = new QueueChangeMessage(queueName, conId);
         result.setLength(sizeOf(queueName));
         result.setOperationType(operationType);
@@ -86,6 +87,8 @@ public class QueueController {
     private void doJoin(String queueName, Conversation conversation) {
         queueDao.add(queueName, conversation.getId());
         conversationDao.updateStatus(conversation.getId(), conversation.getStatus());
+        QueueChangeMessage qm = createQueueChangeMessage(queueName, conversation.getId(), OperationTypeEnum.ADD);
+        template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(qm));
     }
 
     public void doDispatch(Conversation conversation) {
@@ -96,12 +99,8 @@ public class QueueController {
             conversation.setStatus(ConversationStatus.NOTACCEPTED);
             if (SessionManager.getInstance().hasOnlineCustomerService()) {
                 doJoin(QueueType.PUBLIC.getQueueName(null), conversation);
-                template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.PUBLIC.getQueueName(null),
-                        conversation.getId(), QueueChangeMessage.OperationTypeEnum.ADD)));
             } else {
                 doJoin(QueueType.CUSTOMERMESSAGE.getQueueName(null), conversation);
-                template.convertAndSend(PUSH_QUEUE, ObjectJsonMapper.getJsonStringBy(createQueueChangeMessage(QueueType.CUSTOMERMESSAGE.getQueueName(null),
-                        conversation.getId(), QueueChangeMessage.OperationTypeEnum.ADD)));
             }
         }
     }
@@ -116,7 +115,6 @@ public class QueueController {
             String sourceQueue = source.getQueueName(userName);
             String destQueue = dest.getQueueName(userName);
             queueDao.move(sourceQueue, destQueue, conversationId);
-
         }
     }
 }

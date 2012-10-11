@@ -20,7 +20,7 @@ public class ServerConfigTest {
     @Test
     public void testGetImageServerInfo() {
         ImageServerInfo isi = ServerConfig.getInstance().getImageServerInfo();
-        Assert.assertEquals("http://192.168.2.91:8088/images/", isi.getBaseUrl());
+        Assert.assertEquals("http://192.168.2.91:8080/images/", isi.getBaseUrl());
     }
 
     @Test
@@ -28,5 +28,4 @@ public class ServerConfigTest {
         final String indexDir = ServerConfig.getInstance().getSearchServerIndexDir();
         Assert.assertTrue(StringUtils.isNotEmpty(indexDir));
     }
-
 }

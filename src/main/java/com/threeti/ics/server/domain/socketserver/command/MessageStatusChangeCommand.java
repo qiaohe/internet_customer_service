@@ -1,6 +1,12 @@
 package com.threeti.ics.server.domain.socketserver.command;
 
+import com.threeti.ics.server.common.ObjectJsonMapper;
 import com.threeti.ics.server.dao.message.MessageDao;
+import com.threeti.ics.server.domain.builder.ResponseBuilder;
+import com.threeti.ics.server.domain.protocoldefinition.commandrequest.MessageStatusChangeRequest;
+import com.threeti.ics.server.domain.socketserver.handler.MessageStatusChangeHandler;
+import com.threeti.ics.server.domain.socketserver.server.SessionManager;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.session.IoSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -18,21 +24,22 @@ public class MessageStatusChangeCommand extends AbstractCommand implements Comma
     private static final String STATUS_CHANGED_KEY = "messagestatuschange";
     @Autowired
     private MessageDao messageDao;
+    @Autowired
+    private MessageStatusChangeHandler messageStatusChangeHandler;
 
     public MessageStatusChangeCommand(Object request) {
         super(request);
     }
 
-
     @Override
     public void execute(IoSession session) {
-//        MessageStatusChangeRequest request = ObjectJsonMapper.getObjectBy(getRequestAsString(), MessageStatusChangeRequest.class);
-//        messageDao.updateStatus(StringUtils.split(request.getMessageIds(), ID_DELIMITER), request.getStatus());
-//        IoSession ses = SessionManager.getInstance().getSession(request.getTo());
-//        if (ses != null) {
-//            addResult(STATUS_CHANGED_KEY, getRequestAsString());
-//            ses.write(new ResponseBuilder(this).getResponse());
-//        }
+        MessageStatusChangeRequest request = ObjectJsonMapper.getObjectBy(getRequestAsString(), MessageStatusChangeRequest.class);
+        messageDao.updateStatus(request.getMessageIdArray(), request.getStatus());
+        messageStatusChangeHandler.handle(request);
+        IoSession ses = SessionManager.getInstance().getSession(request.getTo());
+        if (ses != null) {
+            addResult(STATUS_CHANGED_KEY, request);
+            ses.write(new ResponseBuilder(this).getResponse());
+        }
     }
-
 }

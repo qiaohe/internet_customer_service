@@ -29,7 +29,7 @@ public class ServerHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-       super.sessionClosed(session);
+        super.sessionClosed(session);
     }
 
     @Override

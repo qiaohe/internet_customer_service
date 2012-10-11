@@ -1,5 +1,8 @@
 package com.threeti.ics.server.domain.protocoldefinition.commandrequest;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by IntelliJ IDEA.
  * User: qhe
@@ -8,6 +11,7 @@ package com.threeti.ics.server.domain.protocoldefinition.commandrequest;
  * To change this template use File | Settings | File Templates.
  */
 public class MessageStatusChangeRequest {
+    private static final String ID_SEPERATOR = ",";
     private String messageIds;
     private String status;
     private String from;
@@ -43,5 +47,10 @@ public class MessageStatusChangeRequest {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    @JsonIgnore
+    public String[] getMessageIdArray() {
+        return StringUtils.split(messageIds, ID_SEPERATOR);
     }
 }

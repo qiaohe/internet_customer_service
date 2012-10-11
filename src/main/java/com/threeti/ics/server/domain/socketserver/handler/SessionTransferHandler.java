@@ -8,6 +8,7 @@ import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversatio
 import com.threeti.ics.server.domain.protocoldefinition.message.Message;
 import com.threeti.ics.server.domain.socketserver.command.MessageTransferCommand;
 import com.threeti.ics.server.domain.socketserver.server.SessionManager;
+import com.threeti.ics.server.listener.OperationTypeEnum;
 import com.threeti.ics.server.listener.PushMessage;
 import com.threeti.ics.server.listener.QueueChangeMessage;
 import org.apache.mina.core.session.IoSession;
@@ -46,7 +47,7 @@ public class SessionTransferHandler extends AbstractSessionHandler implements Se
     public QueueChangeMessage createQueueChangMessage(SessionOperationRequest request) {
         return queueController.createQueueChangeMessage(request.getCustomerService(),
                 request.getConversationId(),
-                QueueChangeMessage.OperationTypeEnum.ADD);
+                OperationTypeEnum.ADD);
     }
 
 

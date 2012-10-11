@@ -69,8 +69,4 @@ public class QueueChangeMessage {
     public Conversation getConversation() {
         return conversationDao.findBy(conversationId);
     }
-
-    public static enum OperationTypeEnum {
-        ADD, REMOVE
-    }
 }

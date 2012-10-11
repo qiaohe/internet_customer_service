@@ -19,6 +19,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.concurrent.Executors;
 
 import static org.apache.mina.filter.codec.textline.LineDelimiter.WINDOWS;
 
@@ -53,10 +54,11 @@ public final class Server {
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(creteProtocolCodecFactory()));
-        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(new OrderedThreadPoolExecutor(getSocketServerInfo().getThreadPoolSize())));
+        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
+//        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(new OrderedThreadPoolExecutor(getSocketServerInfo().getThreadPoolSize())));
         acceptor.getSessionConfig().setTcpNoDelay(true);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-        acceptor.getSessionConfig().setReuseAddress(true);
+//        acceptor.getSessionConfig().setReuseAddress(true);
         acceptor.setHandler(new ServerHandler());
         acceptor.bind(new InetSocketAddress(getSocketServerInfo().getPort()));
     }

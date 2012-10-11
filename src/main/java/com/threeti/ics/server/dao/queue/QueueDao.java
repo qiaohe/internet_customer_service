@@ -24,7 +24,7 @@ public class QueueDao extends AbstractGenericDaoImpl<QueueType> implements Gener
     }
 
     public void remove(final String queueName, final Long conId) {
-        template.opsForSet().remove(queueName, conId);
+        template.opsForSet().remove(queueName, conId.toString());
     }
 
     public void add(final String queueName, final Long conId) {
@@ -37,6 +37,14 @@ public class QueueDao extends AbstractGenericDaoImpl<QueueType> implements Gener
 
     public Long sizeOf(final String queueName) {
         return template.opsForSet().size(queueName);
+    }
+
+    public void add(final String queueName, final String messageId) {
+        template.opsForSet().add(queueName, messageId);
+    }
+
+    public void remove(final String queueName, final String messageId) {
+        template.opsForSet().remove(queueName, messageId);
     }
 
     public List<String> getVisitors(final String customerServiceUserName) {

@@ -2,6 +2,7 @@ package com.threeti.ics.server.domain.socketserver.server;
 
 import com.threeti.ics.server.common.Constants;
 import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.service.IoService;
 import org.apache.mina.core.session.IoSession;
 import org.springframework.util.CollectionUtils;
@@ -82,7 +83,14 @@ public class SessionManager {
         }
         return null;
     }
-    
+
+    public IoSession getSession(final String destination) {
+        if (!StringUtils.isEmpty(destination) && destination.length() == 10) {
+            return getSessionByCustomerService(destination);
+        }
+        return getSessionByVisitor(destination);
+    }
+
     public void broadcast(final String message) {
         for (IoSession session : getCustomerServiceSessions()) {
             session.write(message);
