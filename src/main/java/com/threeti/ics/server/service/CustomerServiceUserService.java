@@ -1,6 +1,9 @@
 package com.threeti.ics.server.service;
 
+import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUser;
 import com.threeti.ics.server.web.ResponseResult;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,5 +19,7 @@ public interface CustomerServiceUserService {
     public boolean changeHeadPortrait(String userName, String imageUrl);
 
     public boolean changeNickName(String userName, String nickName);
+
+    public List<CustomerServiceUser> findAll();
 
 }

@@ -1,6 +1,8 @@
 package com.threeti.ics.server.domain.protocoldefinition.identity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.threeti.ics.server.domain.protocoldefinition.CustomerServiceStatus;
+import com.threeti.ics.server.dto.CustomerServiceUserDto;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,5 +85,10 @@ public class CustomerServiceUser implements ICSUser {
 
     public void setServiceToken(String serviceToken) {
         this.serviceToken = serviceToken;
+    }
+
+    @JsonIgnore
+    public CustomerServiceUserDto getDto() {
+        return new CustomerServiceUserDto(this.userName, this.nickName, this.headPortrait);
     }
 }

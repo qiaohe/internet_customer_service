@@ -7,6 +7,8 @@ import com.threeti.ics.server.web.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.threeti.ics.server.common.Constants.*;
 import static com.threeti.ics.server.web.ResponseResult.*;
 
@@ -43,5 +45,10 @@ public class CustomerServiceUserServiceImpl implements CustomerServiceUserServic
     public boolean changeNickName(String userName, String nickName) {
         customerServiceUserDao.updateNickName(userName, nickName);
         return true;
+    }
+
+    @Override
+    public List<CustomerServiceUser> findAll() {
+        return customerServiceUserDao.find();
     }
 }

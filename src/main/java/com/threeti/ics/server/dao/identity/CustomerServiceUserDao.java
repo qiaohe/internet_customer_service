@@ -30,7 +30,6 @@ public class CustomerServiceUserDao extends AbstractGenericDaoImpl<CustomerServi
         String id = template.opsForValue().get(KeyUtils.customerServiceUserUserName(user.getUserName()));
         if (id != null) {
             user.setId(Long.valueOf(id));
-            entities.addFirst(id);
             return Long.valueOf(id);
         }
         return idCounter.incrementAndGet();
@@ -46,6 +45,8 @@ public class CustomerServiceUserDao extends AbstractGenericDaoImpl<CustomerServi
         user.setId(id);
         template.opsForHash().putAll(getIdKey(id), getProperties(user));
         template.opsForValue().set(KeyUtils.customerServiceUserUserName(user.getUserName()), id.toString());
+        if (!entities.contains(id.toString()))
+            entities.addFirst(id.toString());
         return user;
     }
 
@@ -72,7 +73,7 @@ public class CustomerServiceUserDao extends AbstractGenericDaoImpl<CustomerServi
     }
 
     public boolean remove(CustomerServiceUser user) {
-        if (!entities.contains(user.getId().toString())) throw new IllegalArgumentException("record doest not exist.");
+        if (!entities.contains(user.getId().toString())) throw new IllegalArgumentException("record does not exist.");
         template.opsForHash().delete("id", user.getId());
         template.opsForHash().delete("userName", user.getUserName());
         template.opsForHash().delete("password", user.getPassword());

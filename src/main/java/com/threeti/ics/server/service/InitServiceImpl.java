@@ -8,6 +8,7 @@ import com.threeti.ics.server.domain.protocoldefinition.CustomerServiceStatus;
 import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUser;
 import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +32,15 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private MessageTextTemplateDao messageTextTemplateDao;
 
+    @Autowired
+    private RedisTemplate<String, String> template;
+
+    private String getHeadUrl(final String userName) {
+        return "http://192.168.2.91:8080/images/headportrait/" + userName + ".jpg";
+    }
     @PostConstruct
     public void init() {
+//        template.getConnectionFactory().getConnection().flushAll();
         MobileApp app = new MobileApp();
         app.setAppKey("8890fgdkj90fdg89f88");
         app.setAppName("App0");
@@ -46,7 +54,7 @@ public class InitServiceImpl implements InitService {
         u1.setStatus(CustomerServiceStatus.BUSY);
         u1.setUserName("abcdef0002");
         u1.setNickName("Clark");
-        u1.setHeadPortrait("http://www.3ti.us");
+        u1.setHeadPortrait(getHeadUrl(u1.getUserName()));
         u1.setRole(CustomerServiceUserRole.USER);
         u1.setPassword("123456");
         customerServiceUserDao.create(u1);
@@ -56,7 +64,7 @@ public class InitServiceImpl implements InitService {
             customerServcieUser.setStatus(CustomerServiceStatus.BUSY);
             customerServcieUser.setUserName("aaaaaa000" + String.valueOf(i));
             customerServcieUser.setNickName("Jack" + String.valueOf(i));
-            customerServcieUser.setHeadPortrait("http://www.3ti.us");
+            customerServcieUser.setHeadPortrait(getHeadUrl(customerServcieUser.getUserName()));
             customerServcieUser.setRole(CustomerServiceUserRole.USER);
             customerServcieUser.setPassword("123456");
             customerServiceUserDao.create(customerServcieUser);
@@ -66,7 +74,7 @@ public class InitServiceImpl implements InitService {
         u2.setStatus(CustomerServiceStatus.BUSY);
         u2.setUserName("abcdef0003");
         u2.setNickName("Johnson");
-        u2.setHeadPortrait("http://www.3ti.us");
+        u2.setHeadPortrait(getHeadUrl(u2.getUserName()));
         u2.setRole(CustomerServiceUserRole.USER);
         u2.setPassword("123456");
         customerServiceUserDao.create(u2);
@@ -75,7 +83,7 @@ public class InitServiceImpl implements InitService {
         admin.setStatus(CustomerServiceStatus.BUSY);
         admin.setUserName("abcdef0000");
         admin.setNickName("Jack");
-        admin.setHeadPortrait("http://www.3ti.us");
+        admin.setHeadPortrait(getHeadUrl(admin.getUserName()));
         admin.setRole(CustomerServiceUserRole.ADMIN);
         admin.setPassword("123456");
         customerServiceUserDao.create(admin);
@@ -84,7 +92,7 @@ public class InitServiceImpl implements InitService {
         admin1.setStatus(CustomerServiceStatus.BUSY);
         admin1.setUserName("abcdef0001");
         admin1.setNickName("Eric");
-        admin1.setHeadPortrait("http://www.3ti.us");
+        admin1.setHeadPortrait(getHeadUrl(admin1.getUserName()));
         admin1.setRole(CustomerServiceUserRole.USER);
         admin1.setPassword("123456");
         customerServiceUserDao.create(admin1);
@@ -101,6 +109,5 @@ public class InitServiceImpl implements InitService {
         List<String> t4 = new ArrayList<String>();
         t4.add("稍等,我一会儿联系您.");
         messageTextTemplateDao.add("8890fgdkj90fdg89f88", "自定义", t4);
-
     }
 }

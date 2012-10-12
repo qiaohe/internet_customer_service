@@ -40,8 +40,8 @@ public abstract class KeyUtils {
         return String.format("conversation:%s:messages", conversationId);
     }
 
-    public static String conversationMessageIdKey(final String conversationId, final String messageId) {
-        return String.format("conversation:%s:message:%s", conversationId, messageId);
+    public static String conversationWithMessageKey() {
+        return String.format("conversation:withMessage");
     }
 
     public static String conversationTopic(final String topicId) {

@@ -124,10 +124,15 @@ public class ConversationDao extends AbstractGenericDaoImpl<Conversation> implem
 
     public List<Conversation> findByVisitor(String visitor, int pageFrom, int pageSize) {
         List<Conversation> result = new ArrayList<Conversation>();
+        template.delete(KeyUtils.conversationVisitor(visitor));
         for (String k : template.keys(KeyUtils.conversationProductIdAndVisitorKey(visitor))) {
             template.opsForSet().add(KeyUtils.conversationVisitor(visitor), template.opsForValue().get(k));
         }
-        template.opsForSet().intersectAndStore(KeyUtils.conversationVisitor(visitor), getConversationsWithMessage(), KeyUtils.conversationVisitor(visitor));
+        template.delete(KeyUtils.conversationWithMessageKey());
+        for (String k : template.keys("conversation:*:messages")) {
+            template.opsForSet().add(KeyUtils.conversationWithMessageKey(), StringUtils.substringBetween(k, ":"));
+        }
+        template.opsForSet().intersectAndStore(KeyUtils.conversationVisitor(visitor), KeyUtils.conversationWithMessageKey(), KeyUtils.conversationVisitor(visitor));
         List<String> sort = template.sort(SortQueryBuilder.sort(KeyUtils.conversationVisitor(visitor)).order(SortParameters.Order.DESC).limit(pageFrom, pageSize).build());
         for (String covId : sort) {
             Conversation c = findBy(Long.valueOf(covId));

@@ -2,6 +2,8 @@ package com.threeti.ics.server.web;
 
 import com.threeti.ics.server.common.Constants;
 import com.threeti.ics.server.domain.imageserver.ImageFileName;
+import com.threeti.ics.server.domain.protocoldefinition.identity.CustomerServiceUser;
+import com.threeti.ics.server.dto.CustomerServiceUserDto;
 import com.threeti.ics.server.service.CustomerServiceUserService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import javax.jws.WebParam;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,5 +72,15 @@ public class CustomerServiceController {
             LOGGER.error(e.getMessage());
         }
         return null;
+    }
+
+    @RequestMapping(value = "/customerServiceUsers", method = RequestMethod.GET)
+    @ResponseBody
+    public List<CustomerServiceUserDto> getCustomerServiceUsers() {
+        List<CustomerServiceUserDto> result = new ArrayList<CustomerServiceUserDto>();
+        for (CustomerServiceUser u : customerServiceUserService.findAll()) {
+            result.add(u.getDto());
+        }
+        return result;
     }
 }

@@ -2,9 +2,11 @@ package com.threeti.ics.server.domain.socketserver.command;
 
 import com.threeti.ics.server.common.ObjectJsonMapper;
 import com.threeti.ics.server.dao.conversation.ConversationDao;
+import com.threeti.ics.server.dao.core.KeyUtils;
 import com.threeti.ics.server.domain.builder.ResponseBuilder;
-import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
+import com.threeti.ics.server.domain.messagequeue.QueueController;
 import com.threeti.ics.server.domain.protocoldefinition.commandrequest.VisitorConversationRequest;
+import com.threeti.ics.server.domain.protocoldefinition.conversation.Conversation;
 import org.apache.mina.core.session.IoSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -23,15 +25,20 @@ public class VisitorConversationCommand extends AbstractCommand implements Comma
     private static final String RESULT_CONVERSATION_LIST_KEY = "conversations";
     @Autowired
     private ConversationDao conversationDao;
+    @Autowired
+    private QueueController queueController;
 
     public VisitorConversationCommand(Object request) {
         super(request);
-}
+    }
 
     @Override
     public void execute(IoSession session) {
         VisitorConversationRequest request = ObjectJsonMapper.getObjectBy(getRequestAsString(), VisitorConversationRequest.class);
         List<Conversation> conversations = conversationDao.findByVisitor(request.getVisitor(), request.getPageFrom(), request.getPageSize());
+        for (Conversation c : conversations) {
+            c.setUnreadMessageCount(queueController.sizeOf(KeyUtils.unreadConversationMessage(c.getId(), request.getVisitor())));
+        }
         addResult(RESULT_CONVERSATION_LIST_KEY, conversations);
         session.write(new ResponseBuilder(this).getResponse());
     }
